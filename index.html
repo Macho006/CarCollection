@@ -4,30 +4,214 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     <title>CAR COLLECTION</title>
+    <style>
+        :root {
+            --bg-1: #07090f;
+            --bg-2: #0d1220;
+            --bg-3: #0a0f1a;
+            --card: #111827;
+            --card-2: #1b2436;
+            --ink: #eef5ff;
+            --muted: #a6b4c9;
+            --accent: #41f0d9;
+            --accent-2: #ff9a3d;
+            --accent-3: #7c7bff;
+            --glow: rgba(65, 240, 217, 0.28);
+        }
+
+        body {
+            font-family: "Space Grotesk", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(900px 500px at 12% -10%, rgba(65, 240, 217, 0.18), transparent 60%),
+                radial-gradient(700px 450px at 88% 12%, rgba(255, 154, 61, 0.18), transparent 55%),
+                linear-gradient(180deg, var(--bg-1), var(--bg-2) 55%, var(--bg-3));
+            min-height: 100vh;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -20% -10%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            background:
+                repeating-linear-gradient(120deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 12px);
+            opacity: 0.3;
+            mix-blend-mode: screen;
+        }
+
+        body::after {
+            background:
+                radial-gradient(1200px 700px at 20% 120%, rgba(124, 123, 255, 0.15), transparent 60%),
+                radial-gradient(1000px 600px at 120% -10%, rgba(65, 240, 217, 0.12), transparent 60%);
+            filter: blur(10px);
+        }
+
+        .title-font {
+            font-family: "Bebas Neue", "Space Grotesk", sans-serif;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-glass {
+            background: linear-gradient(110deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(16px);
+        }
+
+        .page-wrap {
+            position: relative;
+            z-index: 1;
+            padding-top: 90px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-size: 11px;
+        }
+
+        .hero-reveal {
+            animation: fade-up 0.9s ease both;
+        }
+
+        .hero-reveal-delay {
+            animation: fade-up 0.9s ease 0.15s both;
+        }
+
+        .car-card {
+            background: linear-gradient(160deg, var(--card), var(--card-2));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 18px 50px rgba(2, 8, 23, 0.6);
+            transform: translateY(12px);
+            opacity: 0;
+            animation: card-in 0.7s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .car-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(130deg, rgba(65, 240, 217, 0.15), transparent 40%, rgba(255, 154, 61, 0.12));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .car-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45), 0 0 25px var(--glow);
+        }
+
+        .car-card:hover::before {
+            opacity: 1;
+        }
+
+        .car-card:nth-child(1) { animation-delay: 0.05s; }
+        .car-card:nth-child(2) { animation-delay: 0.1s; }
+        .car-card:nth-child(3) { animation-delay: 0.15s; }
+        .car-card:nth-child(4) { animation-delay: 0.2s; }
+        .car-card:nth-child(5) { animation-delay: 0.25s; }
+        .car-card:nth-child(6) { animation-delay: 0.3s; }
+
+        .model-frame {
+            background: linear-gradient(140deg, rgba(65, 240, 217, 0.35), rgba(255, 255, 255, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: inset 0 0 30px rgba(65, 240, 217, 0.18);
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .fullscreen-btn {
+            background: linear-gradient(120deg, rgba(65, 240, 217, 0.95), rgba(255, 154, 61, 0.95));
+            color: #0a0f1a;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            box-shadow: 0 12px 25px rgba(65, 240, 217, 0.3);
+        }
+
+        .fullscreen-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-panel {
+            transform: scale(0.96);
+            opacity: 0;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .modal-overlay.is-open .modal-panel {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes card-in {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+    </style>
 </head>
-<body class="bg-[#1F2125]">
-    <div class="container mx-auto px-4 py-8">
+<body>
+    <div class="container mx-auto px-4 py-10 page-wrap">
         <header>
-            <nav class="fixed top-0 left-0 w-full z-50 bg-white/30 dark:bg-black/30 backdrop-blur-md shadow-md flex justify-between items-center px-6 py-3">
+            <nav class="fixed top-0 left-0 w-full z-50 nav-glass flex justify-between items-center px-6 py-3">
             
             <a href="./index.html" class="flex items-center space-x-2">
-                <span class="font-extrabold text-xl md:text-2xl bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent tracking-wide uppercase drop-shadow-md">
+                <span class="title-font text-xl md:text-2xl bg-gradient-to-r from-cyan-300 via-sky-400 to-orange-400 bg-clip-text text-transparent uppercase drop-shadow-md">
                     Car Collection
                 </span>
             </a>
 
             <a href="https://github.com/Macho006">
-                <button class="flex items-center justify-center gap-3 px-4 py-2 bg-transparent outline outline-[3px] outline-[#181717] outline-offset-[-3px] rounded-md border-none cursor-pointer transition-all duration-400 group ">
+                <button class="flex items-center justify-center gap-3 px-4 py-2 bg-transparent outline outline-[2px] outline-white/40 outline-offset-[-2px] rounded-md border-none cursor-pointer transition-all duration-400 group ">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                         class="transition-all duration-400 fill-white group-hover:fill-[#5a5757]"
                         d="M12 0.296997C5.37 0.296997 0 5.67 0 12.297C0 17.6 3.438 22.097 8.205 23.682C8.805 23.795 9.025 23.424 9.025 23.105C9.025 22.82 9.015 22.065 9.01 21.065C5.672 21.789 4.968 19.455 4.968 19.455C4.422 18.07 3.633 17.7 3.633 17.7C2.546 16.956 3.717 16.971 3.717 16.971C4.922 17.055 5.555 18.207 5.555 18.207C6.625 20.042 8.364 19.512 9.05 19.205C9.158 18.429 9.467 17.9 9.81 17.6C7.145 17.3 4.344 16.268 4.344 11.67C4.344 10.36 4.809 9.29 5.579 8.45C5.444 8.147 5.039 6.927 5.684 5.274C5.684 5.274 6.689 4.952 8.984 6.504C9.944 6.237 10.964 6.105 11.984 6.099C13.004 6.105 14.024 6.237 14.984 6.504C17.264 4.952 18.269 5.274 18.269 5.274C18.914 6.927 18.509 8.147 18.389 8.45C19.154 9.29 19.619 10.36 19.619 11.67C19.619 16.28 16.814 17.295 14.144 17.59C14.564 17.95 14.954 18.686 14.954 19.81C14.954 21.416 14.939 22.706 14.939 23.096C14.939 23.411 15.149 23.786 15.764 23.666C20.565 22.092 24 17.592 24 12.297C24 5.67 18.627 0.296997 12 0.296997Z">
                     </path>
                     </svg>
-                    <p class="font-bold text-white text-base transition-all duration-400 group-hover:text-[#5a5757]">
+                    <p class="font-bold text-white text-base transition-all duration-400 group-hover:text-white/70">
                       GitHub
                     </p>
                 </button>
@@ -38,18 +222,19 @@
         </header>
 
         <main>
-            <section class="text-center py-16">
-                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold 
+            <section class="text-center py-20">
+                <span class="hero-tag hero-reveal">showroom / 3d experience</span>
+                <h1 class="title-font text-5xl md:text-7xl lg:text-8xl font-extrabold 
                            tracking-tight text-slate-100 
-                           drop-shadow-[0_4px_20px_rgba(255,255,255,0.2)]">
+                           drop-shadow-[0_6px_30px_rgba(87,227,255,0.15)] hero-reveal">
                   <span class="block">Ultimate</span>
                   <span class="block text-transparent bg-clip-text 
-                               bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
+                               bg-gradient-to-r from-cyan-300 via-sky-400 to-orange-400">
                     Car Collection
                   </span>
                 </h1>
               
-                <p class="mt-6 text-lg md:text-xl text-slate-400 tracking-wide">
+                <p class="mt-6 text-lg md:text-xl text-slate-300 tracking-wide hero-reveal-delay">
                   Explore the world’s most iconic cars in 3D
                 </p>
             </section>
@@ -57,16 +242,16 @@
             <section>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           
-                    <div class="bg-[#1e1e1e] text-white p-6 hover:shadow-[0_2px_15px_rgba(128,128,128,1)] rounded-2xl transition-shadow duration-300">
+                    <div class="car-card text-white p-6 rounded-2xl transition-all duration-300">
                         <div class="relative">
-                            <model-viewer class="bg-[#b5e5d2] rounded-sm w-full h-[300px] md:h-[350px] mx-auto" alt="BMW M4 CSL"
+                            <model-viewer class="model-frame rounded-xl w-full h-[300px] md:h-[350px] mx-auto" alt="BMW M4 CSL"
                               src="./bmw_m4csl.glb" ar shadow-intensity="1" camera-controls
                               touch-action="pan-y">
                             </model-viewer>
                         
                             <!-- Fullscreen tugma -->
                             <button 
-                              class="fullscreen-btn absolute bottom-3 right-3 bg-slate-800 text-white px-3 py-1 rounded-md text-sm hover:bg-slate-600 transition cursor-pointer"
+                              class="fullscreen-btn absolute bottom-3 right-3 px-3 py-1 rounded-md text-sm transition cursor-pointer"
                               data-src="./bmw_m4csl.glb"
                               data-title="BMW M4 CSL">
                               Fullscreen
@@ -86,15 +271,15 @@
                       
                     </div>
               
-                    <div class="bg-[#1e1e1e] text-white p-6 hover:shadow-[0_2px_15px_rgba(128,128,128,1)] rounded-2xl transition-shadow duration-300">
+                    <div class="car-card text-white p-6 rounded-2xl transition-all duration-300">
                         <div class="relative">
-                            <model-viewer class="bg-[#b5e5d2] rounded-sm w-full h-[300px] md:h-[350px] mx-auto"
+                            <model-viewer class="model-frame rounded-xl w-full h-[300px] md:h-[350px] mx-auto"
                                 src="./mclaren_720s_spider.glb" ar environment-image="" 
                                 poster="" shadow-intensity="1" camera-controls touch-action="pan-y">
                             </model-viewer>
             
                             <button 
-                            class="fullscreen-btn absolute bottom-3 right-3 bg-slate-800 text-white px-3 py-1 rounded-md text-sm hover:bg-slate-600 transition cursor-pointer"
+                            class="fullscreen-btn absolute bottom-3 right-3 px-3 py-1 rounded-md text-sm transition cursor-pointer"
                             data-src="./mclaren_720s_spider.glb"
                             data-title="McLaren 720S Spider">
                             Fullscreen
@@ -113,15 +298,15 @@
                           
                     </div>
             
-                    <div class="bg-[#1e1e1e] text-white p-6 hover:shadow-[0_2px_15px_rgba(128,128,128,1)] rounded-2xl transition-shadow duration-300">
+                    <div class="car-card text-white p-6 rounded-2xl transition-all duration-300">
                         <div class="relative">
-                            <model-viewer class="bg-[#b5e5d2] rounded-sm w-full h-[300px] md:h-[350px] mx-auto"
+                            <model-viewer class="model-frame rounded-xl w-full h-[300px] md:h-[350px] mx-auto"
                                 src="./toyota_supra_3d_model_free.glb" ar environment-image="" 
                                 poster="" shadow-intensity="1" camera-controls touch-action="pan-y">
                             </model-viewer>
             
                             <button 
-                            class="fullscreen-btn absolute bottom-3 right-3 bg-slate-800 text-white px-3 py-1 rounded-md text-sm hover:bg-slate-600 transition cursor-pointer"
+                            class="fullscreen-btn absolute bottom-3 right-3 px-3 py-1 rounded-md text-sm transition cursor-pointer"
                             data-src="./toyota_supra_3d_model_free.glb"
                             data-title="Toyota Supra GR">
                             Fullscreen
@@ -141,15 +326,15 @@
                     </div>
             
             
-                    <div class="bg-[#1e1e1e] text-white p-6 hover:shadow-[0_2px_15px_rgba(128,128,128,1)] rounded-2xl transition-shadow duration-300">
+                    <div class="car-card text-white p-6 rounded-2xl transition-all duration-300">
                         <div class="relative"> 
-                            <model-viewer class="bg-[#b5e5d2] rounded-sm w-full h-[300px] md:h-[350px] mx-auto"
+                            <model-viewer class="model-frame rounded-xl w-full h-[300px] md:h-[350px] mx-auto"
                                 src="./toyota_gt86_3d_model_free.glb" ar environment-image="" 
                                 poster="" shadow-intensity="1" camera-controls touch-action="pan-y">
                             </model-viewer>
             
                             <button 
-                            class="fullscreen-btn absolute bottom-3 right-3 bg-slate-800 text-white px-3 py-1 rounded-md text-sm hover:bg-slate-600 transition cursor-pointer"
+                            class="fullscreen-btn absolute bottom-3 right-3 px-3 py-1 rounded-md text-sm transition cursor-pointer"
                             data-src="./toyota_gt86_3d_model_free.glb"
                             data-title="Toyota GT86">
                             Fullscreen
@@ -168,15 +353,15 @@
                           
                     </div>
                 
-                    <div class="bg-[#1e1e1e] text-white p-6 hover:shadow-[0_2px_15px_rgba(128,128,128,1)] rounded-2xl transition-shadow duration-300">
+                    <div class="car-card text-white p-6 rounded-2xl transition-all duration-300">
                         <div class="relative">
-                            <model-viewer class="bg-[#b5e5d2] rounded-sm w-full h-[300px] md:h-[350px] mx-auto"
+                            <model-viewer class="model-frame rounded-xl w-full h-[300px] md:h-[350px] mx-auto"
                                 src="./porsche_911.glb" ar environment-image="" 
                                 poster="" shadow-intensity="1" camera-controls touch-action="pan-y">
                             </model-viewer>
             
                             <button 
-                            class="fullscreen-btn absolute bottom-3 right-3 bg-slate-800 text-white px-3 py-1 rounded-md text-sm hover:bg-slate-600 transition cursor-pointer"
+                            class="fullscreen-btn absolute bottom-3 right-3 px-3 py-1 rounded-md text-sm transition cursor-pointer"
                             data-src="./porsche_911.glb"
                             data-title="Porsche 911 Targa 4S">
                             Fullscreen
@@ -195,15 +380,15 @@
                           
                     </div>
             
-                    <div class="bg-[#1e1e1e] text-white p-6 hover:shadow-[0_2px_15px_rgba(128,128,128,1)] rounded-2xl shadow-inherit">
+                    <div class="car-card text-white p-6 rounded-2xl transition-all duration-300">
                         <div class="relative">
-                            <model-viewer class="bg-[#b5e5d2] rounded-sm w-full h-[300px] md:h-[350px] mx-auto"
+                            <model-viewer class="model-frame rounded-xl w-full h-[300px] md:h-[350px] mx-auto"
                                 src="./aston_martin_vulcan.glb" ar environment-image="" 
                                 poster="" shadow-intensity="1" camera-controls touch-action="pan-y">
                             </model-viewer>
             
                             <button 
-                            class="fullscreen-btn absolute bottom-3 right-3 bg-slate-800 text-white px-3 py-1 rounded-md text-sm hover:bg-slate-600 transition cursor-pointer"
+                            class="fullscreen-btn absolute bottom-3 right-3 px-3 py-1 rounded-md text-sm transition cursor-pointer"
                             data-src="./aston_martin_vulcan.glb"
                             data-title="Aston Martin Vulcan">
                             Fullscreen
@@ -223,8 +408,8 @@
                     </div>
               
                     <!-- UNIVERSAL FULLSCREEN MODAL -->
-                    <div id="fullscreenModal" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center">
-                        <div class="relative w-[95%] h-[90%] bg-[#1e1e1e] rounded-lg p-2 flex items-center justify-center">
+                    <div id="fullscreenModal" class="modal-overlay fixed inset-0 bg-black/85 hidden z-50 flex items-center justify-center">
+                        <div class="modal-panel relative w-[95%] h-[90%] bg-[#11151c] rounded-2xl p-2 flex items-center justify-center border border-white/10">
                     
                         <!-- Yopish tugmasi -->
                         <button id="closeModalBtn"
@@ -250,13 +435,13 @@
               
         </main>
     </div>
-    <footer class="bg-[#181a1d] border-t border-gray-700/50 mt-16 w-full">
+    <footer class="bg-[#0b1019] border-t border-white/10 mt-16 w-full">
         <div class="w-full px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
           
           <!-- Brand & Description -->
           <div class="text-center md:text-left">
-            <h2 class="text-2xl font-bold text-white tracking-wide">Car Collection</h2>
-            <p class="mt-2 text-gray-400 text-sm">
+            <h2 class="text-2xl font-bold text-white tracking-wide title-font">Car Collection</h2>
+            <p class="mt-2 text-slate-400 text-sm">
               Explore the world’s most iconic cars in stunning 3D.
             </p>
           </div>
@@ -264,8 +449,8 @@
           <div>
             <a href="https://github.com/Macho006" target="_blank"
                class="flex items-center gap-3 px-5 py-2 rounded-lg 
-                      bg-gradient-to-r from-purple-500 via-pink-500 to-red-500
-                      text-white font-semibold shadow-lg shadow-purple-500/30
+                      bg-gradient-to-r from-teal-400 via-cyan-400 to-orange-400
+                      text-slate-900 font-semibold shadow-lg shadow-cyan-500/30
                       transition-transform transform hover:scale-105">
               
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="text-white">
@@ -279,7 +464,7 @@
           </div>
         </div>
     
-        <div class="border-t border-gray-700/50 py-4 text-center text-gray-500 text-sm w-full">
+        <div class="border-t border-white/10 py-4 text-center text-slate-500 text-sm w-full">
           © 2025 Car Collection. All rights reserved.
         </div>
     </footer>

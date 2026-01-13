@@ -2,6 +2,22 @@ const fullscreenButtons = document.querySelectorAll('.fullscreen-btn');
 const modal = document.getElementById('fullscreenModal');
 const modalViewer = document.getElementById('fullscreenViewer');
 const closeModalBtn = document.getElementById('closeModalBtn');
+const MODAL_ANIMATION_MS = 250;
+
+const openModal = () => {
+  modal.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    modal.classList.add('is-open');
+  });
+};
+
+const closeModal = () => {
+  modal.classList.remove('is-open');
+  window.setTimeout(() => {
+    modal.classList.add('hidden');
+  }, MODAL_ANIMATION_MS);
+  modalViewer.removeAttribute('src');
+};
 
 fullscreenButtons.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -11,11 +27,14 @@ fullscreenButtons.forEach(btn => {
     modalViewer.setAttribute('src', modelSrc);
     modalViewer.setAttribute('alt', modelTitle);
 
-    modal.classList.remove('hidden');
+    openModal();
   });
 });
 
-closeModalBtn.addEventListener('click', () => {
-  modal.classList.add('hidden');
-  modalViewer.removeAttribute('src'); 
+closeModalBtn.addEventListener('click', closeModal);
+
+modal.addEventListener('click', (event) => {
+  if (event.target === modal) {
+    closeModal();
+  }
 });
